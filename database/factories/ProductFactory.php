@@ -35,6 +35,7 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
+            'active' => $this->faker->boolean(),
             'price' => $this->faker->randomFloat(2, 10, 100),
             'image' =>  $this->faker->randomElement($randomImages),
             'tags' => $this->faker->words(3, true),

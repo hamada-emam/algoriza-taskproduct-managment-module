@@ -31,31 +31,79 @@ class ProductController extends Controller
                     ->orWhere('description', 'like', '%' . $search . '%')
                     ->orWhere('tags', 'like', '%' . $search . '%')
                     ->orWhere('code', 'like', '%' . $search . '%');
-            })->when($request->input('price'), function ($query, $price) {
-                return $query->where('price', '>=', $price);
-            })->when($request->input('name'), function ($query, $name) {
-                return $query->where('name', 'like', '%' . $name . '%');
-            })->when($request->input('description'), function ($query, $description) {
-                return $query->where('description', 'like', '%' . $description . '%');
-            })->when($request->input('tags'), function ($query, $tags) {
-                return $query->where('tags', 'like', '%' . $tags . '%');
-            })->when($request->input('code'), function ($query, $code) {
-                return $query->where('code', $code);
             })
             ->paginate(9);
+
         sleep(2);
 
         if ($request->ajax()) {
-            return view('partials.product_list', compact('products')); // Return product list only
+            return view('partials.product_list', compact('products'));
         }
 
         return view('products.index', compact('products', 'categories'));
     }
 
+    public function list(Request $request)
+    {
+        $categories = Category::ordered()->active()->get();
+
+        $products = Product::ordered()
+            // Filter by category ID
+            ->when($request->input('categoryId'), function ($query, $categoryId) {
+                return $query->whereHas('category', function ($q) use ($categoryId) {
+                    $q->whereKey($categoryId);
+                });
+            })
+            // Filter by search term (name, description, tags, or code)
+            ->when($request->input('search'), function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('description', 'like', '%' . $search . '%')
+                        ->orWhere('tags', 'like', '%' . $search . '%')
+                        ->orWhere('code', 'like', '%' . $search . '%');
+                });
+            })
+            // Filter by price
+            ->when($request->input('price'), function ($query, $price) {
+                return $query->where('price', 'like', '%' . $price . '%');
+            })
+            // Filter by name
+            ->when($request->input('name'), function ($query, $name) {
+                return $query->where('name', 'like', '%' . $name . '%');
+            })
+            // Filter by description
+            ->when($request->input('description'), function ($query, $description) {
+                return $query->where('description', 'like', '%' . $description . '%');
+            })
+            // Filter by tags
+            ->when($request->input('tags'), function ($query, $tags) {
+                return $query->where('tags', 'like', '%' . $tags . '%');
+            })
+            // Filter by code
+            ->when($request->input('code'), function ($query, $code) {
+                return $query->where('code', $code);
+            })
+            // Filter by active/inactive status
+            ->when($request->input('active') !== null, function ($query) use ($request) {
+                return $query->where('active', $request->input('active'));
+            })
+            ->paginate(9);
+
+        sleep(2);
+
+        if ($request->ajax()) {
+            return view('partials.admin_product_list', compact('products'));
+        }
+
+        return view('admin.index', compact('products', 'categories'));
+    }
+
+
     public function create()
     {
-        $categories = Category::all();
-        return view('products.create', compact('categories'));
+        $categories = Category::active()->ordered()->get();
+        $mode = 'create';
+        return view('products.create', compact('categories', 'mode'));
     }
 
     public function store(Request $request)
@@ -86,10 +134,12 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
-    public function edit(Product $product)
+    public function edit($id)
     {
-        $categories = Category::all();
-        return view('products.edit', compact('product', 'categories'));
+        $product = Product::findOrFail($id);
+        $categories = Category::active()->ordered()->get();
+        $mode = 'update';
+        return view('products.edit', compact('product', 'categories', 'mode'));
     }
 
     public function update(Request $request, Product $product)
@@ -114,9 +164,9 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
-    public function destroy(Product $product)
+    public function delete($id)
     {
-        $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        Product::findOrFail($id)->delete();
+        return redirect()->route('products.list')->with('success', 'Product deleted successfully.');
     }
 }

@@ -55,15 +55,9 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col-md-9">
+        <div class="col-md-20">
             <!-- Search Bar -->
-            <form id="search-form" class="mb-4">
-                <div class="input-group shadow-sm">
-                    <input type="text" name="search" class="form-control" placeholder="Search products..."
-                        value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-            </form>
+            @include('partials.search_bare', ['products' => $products])
 
             <!-- Products Grid -->
             <div class="row" id="products-container">

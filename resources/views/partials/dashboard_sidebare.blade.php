@@ -17,15 +17,9 @@
                    <div class="collapse" id="productsMenu">
                        <ul class="nav flex-column ms-3">
                            <li class="nav-item">
-                               <a class="nav-link" href="#">
-                                   <i class="fas fa-plus"></i>
-                                   Add Product
-                               </a>
-                           </li>
-                           <li class="nav-item">
-                               <a class="nav-link" href="#">
+                               <a class="nav-link" href="{{ route('products.list') }}">
                                    <i class="fas fa-list"></i>
-                                   Manage Products
+                                   Products List
                                </a>
                            </li>
                        </ul>

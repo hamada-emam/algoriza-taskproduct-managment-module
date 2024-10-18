@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Support\Facades\Route;
@@ -8,18 +7,15 @@ use Illuminate\Support\Facades\Route;
 
 // Dashboard Routes
 Route::middleware(['auth', 'web'])->prefix('dashboard')->group(function () {
-    Route::get('/', function () {
-        return view('dashboard');
-    });
 
-    // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    // Route::controller(ProductController::class)->group(['prefix' => 'products'], function () {
-    //     Route::get('/', 'create')->name('products.create');
-    //     Route::post('/', 'store')->name('products.store');
-    //     Route::get('/{id}/edit', 'edit')->name('products.edit');
-    //     Route::put('/{id}/update', 'update')->name('products.update');
-    //     Route::delete('/{id}/delete', 'delete')->name('products.delete');
-    // });
+    Route::get('/', [ProductController::class, 'list'])->name('products.list');
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/products/create', 'create')->name('products.create');
+        Route::post('/products/store', 'store')->name('products.store');
+        Route::get('/products/{id}/edit', 'edit')->name('products.edit');
+        Route::put('/products/{id}/update', 'update')->name('products.update');
+        Route::delete('/{id}/delete', 'delete')->name('products.delete');
+    });
 
     // Route::controller(CategoryController::class)->group(['prefix' => 'products'], function () {
     //     Route::post('/', 'create')->name('categories.create');

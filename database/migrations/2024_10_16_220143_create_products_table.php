@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->double('price')->nullable();
             $table->text('description');
+            $table->boolean('active')->default(true);
             $table->foreignIdFor(Category::class, 'category_id')->constrained('categories')->cascadeOnDelete();
             $table->string('tags');
             $table->string('image')->nullable();

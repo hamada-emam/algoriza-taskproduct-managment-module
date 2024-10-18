@@ -24,15 +24,20 @@
 
             <!-- Main content -->
             <main role="main" class="main-content">
-                <div class="container mt-4">
+                <div class="container-fluid mt-16"> <!-- Change to container-fluid -->
                     @yield('content')
                 </div>
             </main>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    @include('partials.loading_spinner')
+
+    <!-- Use full version of jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
         $(document).ready(function() {
             document.getElementById('sidebarToggle').onclick = function() {
@@ -46,6 +51,39 @@
                     mainContent.classList.remove('full-width');
                 }
             };
+        });
+
+        // Handle search filter
+        $('#search-form').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Collect all form data
+            const formData = {
+                search: $('input[name="search"]').val(),
+                categoryId: $('select[name="categoryId"]').val(),
+                price: $('input[name="price"]').val(),
+                tags: $('input[name="tags"]').val(),
+                active: $('select[name="active"]').val(), // Get the value of the active/inactive dropdown
+            };
+
+            $.ajax({
+                url: '{{ route('products.list') }}',
+                type: 'GET',
+                data: formData, // Send the collected data
+                beforeSend: function() {
+                    $('#loading-spinner').show(); // Show the loading spinner
+                },
+                success: function(data) {
+                    $('#products-container').html(data); // Load the filtered products
+                },
+                complete: function() {
+                    $('#loading-spinner').hide(); // Hide the loading spinner
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText); // Log any errors
+                    $('#loading-spinner').hide(); // Hide the loading spinner on error
+                }
+            });
         });
     </script>
 </body>
