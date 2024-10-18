@@ -1,0 +1,199 @@
+/* =====================================
+   Global Styles
+===================================== */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+/* =====================================
+   Header Section (Product Detail Page)
+===================================== */
+
+.header-section {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-section h1 {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+/* =====================================
+   Products List Page (Guest View)
+===================================== */
+
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.product-card img {
+    height: auto;
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-body h5 {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.card-body p {
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+/* Sidebar for Categories */
+.list-group-item a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.list-group-item a:hover {
+    text-decoration: underline;
+}
+
+/* =====================================
+   Search Bar (Guest View)
+===================================== */
+
+.input-group input {
+    border-radius: 0;
+    height: 45px;
+}
+
+.input-group button {
+    height: 45px;
+}
+
+/* =====================================
+   Pagination Styles (Guest View)
+===================================== */
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.page-link {
+    color: #007bff;
+}
+
+.page-link:hover {
+    color: #0056b3;
+}
+
+/* =====================================
+   Product Detail Page
+===================================== */
+
+.product-image-wrapper {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.product-image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.product-details h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.product-category,
+.product-price {
+    font-size: 1.1rem;
+    margin-top: 10px;
+    color: #6c757d;
+}
+
+.product-price {
+    color: #28a745;
+}
+
+.product-details .description h5,
+.product-details .tags h5,
+.product-details .code h5 {
+    margin-top: 20px;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.product-details .description p,
+.product-details .tags p,
+.product-details .code p {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* Disabled Button Styling */
+.btn-primary[disabled] {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* =====================================
+   Back Button (Product Detail Page)
+===================================== */
+
+.btn-outline-primary i {
+    margin-right: 5px;
+}
+
+/* =====================================
+   Responsive Design
+===================================== */
+
+@media (max-width: 768px) {
+    .product-details h1 {
+        font-size: 2rem;
+    }
+
+    .product-price {
+        font-size: 1rem;
+    }
+    
+    .btn-primary {
+        width: 100%;
+    }
+}

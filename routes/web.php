@@ -1,26 +1,46 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use Faker\Generator as Faker;
 
-Route::get('/', function () {
 
-    $faker = new Faker();
-    $imagePath = $faker->image('public/storage/images', 640, 480, null, false);
-    return $imagePath;
-    // if (!file_exists($tempDirectory)) {
-    //     mkdir($tempDirectory, 0777, true);
-    // }
-    // $image = $faker->image($tempDirectory, 640, 480, 'technics', true, true, 'product');
-    // $imageName = basename($image);
-    // $imagePath = 'products/' . $imageName;
-    // return $imagePath;
+// Dashboard Routes
+Route::middleware(['auth', 'web'])->prefix('dashboard')->group(function () {
+    Route::get('/', function () {
+        return view('dashboard');
+    });
 
-    // Storage::disk('public')->put($imagePath, file_get_contents($image));
-    // unlink($image);
+    // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    // Route::controller(ProductController::class)->group(['prefix' => 'products'], function () {
+    //     Route::get('/', 'create')->name('products.create');
+    //     Route::post('/', 'store')->name('products.store');
+    //     Route::get('/{id}/edit', 'edit')->name('products.edit');
+    //     Route::put('/{id}/update', 'update')->name('products.update');
+    //     Route::delete('/{id}/delete', 'delete')->name('products.delete');
+    // });
 
-    // return $imagePath;
+    // Route::controller(CategoryController::class)->group(['prefix' => 'products'], function () {
+    //     Route::post('/', 'create')->name('categories.create');
+    //     Route::put('/', 'store')->name('categories.store');
+    //     Route::post('/{id}/edit', 'edit')->name('categories.edit');
+    //     Route::put('/{id}/update', 'update')->name('categories.update');
+    //     Route::delete('/{id}/delete', 'delete')->name('categories.delete');
+    // });
 
-    return view('welcome');
+    // Route::resource('roles', RoleController::class);
+    // Route::resource('permissions', PermissionController::class);
+    // Route::resource('users', UserController::class);
 });
+
+// Authentication routes
+Route::controller(AuthenticationController::class)->middleware(['web'])->group(function () {
+    Route::get('login', 'loginForm')->name('login.form');
+    Route::post('login', 'login')->name('login');
+    Route::post('logout', 'logout')->middleware('auth')->name('logout');
+});
+
+// Guest Routes
+Route::get('/', [ProductController::class, 'index'])->name('guest.products');
+Route::get('/{id}', [ProductController::class, 'view'])->name('guest.product');
