@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->double('price')->nullable();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->boolean('active')->default(true);
-            $table->foreignIdFor(Category::class, 'category_id')->constrained('categories')->cascadeOnDelete();
-            $table->string('tags');
+            $table->foreignIdFor(Category::class, 'category_id')->cascadeOnDelete()->nullable();
+            $table->string('tags')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
 

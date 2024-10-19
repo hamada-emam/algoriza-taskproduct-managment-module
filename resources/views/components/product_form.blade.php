@@ -97,7 +97,7 @@
                                 @endif
                             </div>
                         </div>
-
+                        {{-- TODO: add validation for active --}}
                         <div class="row align-items-center mb-3">
                             <div class="col-md-2">
                                 <div class="mt-2">

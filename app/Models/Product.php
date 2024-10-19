@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GeneratesCode;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, GeneratesCode;
 
     function category()
     {
@@ -19,6 +20,15 @@ class Product extends Model
 
     function scopeOrdered($query)
     {
-        return $query->orderBy('created_at','desc');
+        return $query->orderBy('created_at', 'desc');
+    }
+
+    public function getImageAttribute($value)
+    {
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        return asset('storage/' . $value);
     }
 }

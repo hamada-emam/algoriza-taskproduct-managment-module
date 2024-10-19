@@ -8,13 +8,24 @@ use Illuminate\Support\Facades\Route;
 // Dashboard Routes
 Route::middleware(['auth', 'web'])->prefix('dashboard')->group(function () {
 
-    Route::get('/', [ProductController::class, 'list'])->name('products.list');
+    Route::get('/', [ProductController::class, 'list'])
+        // ->middleware('check-permissions:list-products')
+        ->name('products.list');
+
     Route::controller(ProductController::class)->group(function () {
-        Route::get('/products/create', 'create')->name('products.create');
-        Route::post('/products/store', 'store')->name('products.store');
-        Route::get('/products/{id}/edit', 'edit')->name('products.edit');
-        Route::put('/products/{id}/update', 'update')->name('products.update');
-        Route::delete('/{id}/delete', 'delete')->name('products.delete');
+        Route::get('/products/create', 'create')
+            ->middleware('check-permissions:create-products')
+            ->name('products.create');
+        Route::post('/products/store', 'store')
+            ->name('products.store');
+        Route::get('/products/{id}/edit', 'edit')
+            ->middleware('check-permissions:edit-products')
+            ->name('products.edit');
+        Route::put('/products/{id}/update', 'update')
+            ->name('products.update');
+        Route::delete('/{id}/delete', 'delete')
+            ->middleware('check-permissions:delete-products')
+            ->name('products.delete');
     });
 
     // Route::controller(CategoryController::class)->group(['prefix' => 'products'], function () {

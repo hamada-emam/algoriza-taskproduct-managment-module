@@ -50,7 +50,7 @@
                             @endif
                         </td>
                         <td class="align-middle">
-                            <span class="text-dark-blue font-weight-500">{{ $product->category->name }}</span>
+                            <span class="text-dark-blue font-weight-500">{{ $product->category?->name }}</span>
                         </td>
                         <td>
                             @foreach (explode(' ', $product->tags) as $tag)

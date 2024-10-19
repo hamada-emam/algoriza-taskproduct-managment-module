@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductCreateRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -12,7 +13,6 @@ class ProductController extends Controller
     public function view($id)
     {
         $product = Product::with('category')->findOrFail($id);
-
         return view('products.view', compact('product'));
     }
 
@@ -48,13 +48,11 @@ class ProductController extends Controller
         $categories = Category::ordered()->active()->get();
 
         $products = Product::ordered()
-            // Filter by category ID
             ->when($request->input('categoryId'), function ($query, $categoryId) {
                 return $query->whereHas('category', function ($q) use ($categoryId) {
                     $q->whereKey($categoryId);
                 });
             })
-            // Filter by search term (name, description, tags, or code)
             ->when($request->input('search'), function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', '%' . $search . '%')
@@ -63,15 +61,12 @@ class ProductController extends Controller
                         ->orWhere('code', 'like', '%' . $search . '%');
                 });
             })
-            // Filter by price
             ->when($request->input('price'), function ($query, $price) {
                 return $query->where('price', 'like', '%' . $price . '%');
             })
-            // Filter by name
             ->when($request->input('name'), function ($query, $name) {
                 return $query->where('name', 'like', '%' . $name . '%');
             })
-            // Filter by description
             ->when($request->input('description'), function ($query, $description) {
                 return $query->where('description', 'like', '%' . $description . '%');
             })
@@ -79,11 +74,9 @@ class ProductController extends Controller
             ->when($request->input('tags'), function ($query, $tags) {
                 return $query->where('tags', 'like', '%' . $tags . '%');
             })
-            // Filter by code
             ->when($request->input('code'), function ($query, $code) {
                 return $query->where('code', $code);
             })
-            // Filter by active/inactive status
             ->when($request->input('active') !== null, function ($query) use ($request) {
                 return $query->where('active', $request->input('active'));
             })
@@ -98,7 +91,6 @@ class ProductController extends Controller
         return view('admin.index', compact('products', 'categories'));
     }
 
-
     public function create()
     {
         $categories = Category::active()->ordered()->get();
@@ -106,32 +98,19 @@ class ProductController extends Controller
         return view('products.create', compact('categories', 'mode'));
     }
 
-    public function store(Request $request)
+    public function store(ProductCreateRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable',
-            'image' => 'nullable|image'
-        ]);
-
-        // Store product
-        $product = new Product($request->all());
+        $product = new Product();
+        dd($request->validated());
+        $product->forceFill($request->validated());
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('product-images', 'public');
-            $product->image = $path;
+            $product->image = upload_file($request->file('image'));
         }
 
         $product->save();
 
-        return redirect()->route('products.index')->with('success', 'Product created successfully.');
-    }
-
-    public function show(Product $product)
-    {
-        return view('products.show', compact('product'));
+        return redirect()->route('products.list')->with('success', 'Product created successfully.');
     }
 
     public function edit($id)
@@ -152,7 +131,7 @@ class ProductController extends Controller
             'image' => 'nullable|image'
         ]);
 
-        $product->fill($request->all());
+        $product->forceFill($request->all());
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('product-images', 'public');
@@ -168,5 +147,55 @@ class ProductController extends Controller
     {
         Product::findOrFail($id)->delete();
         return redirect()->route('products.list')->with('success', 'Product deleted successfully.');
+    }
+
+    // TODO: impelement export 
+    public function export(Request $request)
+    {
+        $categories = Category::ordered()->active()->get();
+
+        $query = Product::ordered()
+            ->when($request->input('categoryId'), function ($query, $categoryId) {
+                return $query->whereHas('category', function ($q) use ($categoryId) {
+                    $q->whereKey($categoryId);
+                });
+            })
+            ->when($request->input('search'), function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('description', 'like', '%' . $search . '%')
+                        ->orWhere('tags', 'like', '%' . $search . '%')
+                        ->orWhere('code', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($request->input('price'), function ($query, $price) {
+                return $query->where('price', 'like', '%' . $price . '%');
+            })
+            ->when($request->input('name'), function ($query, $name) {
+                return $query->where('name', 'like', '%' . $name . '%');
+            })
+            ->when($request->input('description'), function ($query, $description) {
+                return $query->where('description', 'like', '%' . $description . '%');
+            })
+            // Filter by tags
+            ->when($request->input('tags'), function ($query, $tags) {
+                return $query->where('tags', 'like', '%' . $tags . '%');
+            })
+            ->when($request->input('code'), function ($query, $code) {
+                return $query->where('code', $code);
+            })
+            ->when($request->input('active') !== null, function ($query) use ($request) {
+                return $query->where('active', $request->input('active'));
+            });
+
+
+        // ExportJob::dispatch(
+        //     exportable: $exportable ?? new Export(class: new self(), fields: $fields, filters: $filters, textColumns: $textColumns, phoneColumns: $phoneColumns),
+        //     topic: $topic,
+        //     fileHash: md5(microtime()),
+        //     userId: $user->id,
+        //     locale: App::getLocale(),
+        // );
+
     }
 }
