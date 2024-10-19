@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ProductsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductCreateRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Jobs\ExportJob;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -144,50 +146,15 @@ class ProductController extends Controller
     // TODO: impelement export 
     public function export(Request $request)
     {
-        $categories = Category::ordered()->active()->get();
+        $filters = $request->only(['categoryId', 'search', 'price', 'name', 'description', 'tags', 'code', 'active']);
+        $path = generate_unique_file_path('export', 'xlsx');
+        ExportJob::dispatch($filters, auth()->user()->id, $path);
 
-        $query = Product::ordered()
-            ->when($request->input('categoryId'), function ($query, $categoryId) {
-                return $query->whereHas('category', function ($q) use ($categoryId) {
-                    $q->whereKey($categoryId);
-                });
-            })
-            ->when($request->input('search'), function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%')
-                        ->orWhere('tags', 'like', '%' . $search . '%')
-                        ->orWhere('code', 'like', '%' . $search . '%');
-                });
-            })
-            ->when($request->input('price'), function ($query, $price) {
-                return $query->where('price', 'like', '%' . $price . '%');
-            })
-            ->when($request->input('name'), function ($query, $name) {
-                return $query->where('name', 'like', '%' . $name . '%');
-            })
-            ->when($request->input('description'), function ($query, $description) {
-                return $query->where('description', 'like', '%' . $description . '%');
-            })
-            // Filter by tags
-            ->when($request->input('tags'), function ($query, $tags) {
-                return $query->where('tags', 'like', '%' . $tags . '%');
-            })
-            ->when($request->input('code'), function ($query, $code) {
-                return $query->where('code', $code);
-            })
-            ->when($request->input('active') !== null, function ($query) use ($request) {
-                return $query->where('active', $request->input('active'));
-            });
-
-
-        // ExportJob::dispatch(
-        //     exportable: $exportable ?? new Export(class: new self(), fields: $fields, filters: $filters, textColumns: $textColumns, phoneColumns: $phoneColumns),
-        //     topic: $topic,
-        //     fileHash: md5(microtime()),
-        //     userId: $user->id,
-        //     locale: App::getLocale(),
-        // );
-
+        return response()->json([
+            'download_link' => asset('storage/' . $path),
+            'message' => 'Export started successfully, 
+                            Use the link below to download the file, 
+                            Keep link becouse it might take some time to generate the file.'
+        ]);
     }
 }

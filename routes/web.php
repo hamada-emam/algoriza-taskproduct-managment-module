@@ -26,6 +26,8 @@ Route::middleware(['auth', 'web'])->prefix('dashboard')->group(function () {
         Route::delete('/{id}/delete', 'delete')
             ->middleware('check-permissions:delete-products')
             ->name('products.delete');
+        Route::post('/products/export', 'export')
+            ->name('products.export');
     });
 
     // Route::controller(CategoryController::class)->group(['prefix' => 'products'], function () {
@@ -47,6 +49,7 @@ Route::controller(AuthenticationController::class)->middleware(['web'])->group(f
     Route::post('login', 'login')->name('login');
     Route::post('logout', 'logout')->middleware('auth')->name('logout');
 });
+Route::get('/register', [AuthenticationController::class, 'registrationForm'])->name('register.form');
 
 // Guest Routes
 Route::get('/', [ProductController::class, 'index'])->name('guest.products');

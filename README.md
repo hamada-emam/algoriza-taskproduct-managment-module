@@ -37,20 +37,26 @@ Follow these steps to set up the project:
     ```bash
     php artisan key:generate
     ```
+6. Put Mail config in .env file
 
-6. Serve the application:
+7. Serve the application:
     ```bash
     php artisan serve --host 0.0.0.0
     ```
 
-6. Link storage to be public accessible:
+8. Link storage to be public accessible:
     ```bash
     php artisan storage:link
     ```
 
-8. Open the application in your browser:
+9. Open the application in your browser:
     - `http://localhost:8000`
     - OR, if using a different local IP: `http://your-local-ip:8000`
+
+10. Open new terminal and run:
+    ```bash
+    php artisan queue:listen
+    ```
 
 ## Default Users
 

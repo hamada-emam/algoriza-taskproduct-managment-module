@@ -22,6 +22,16 @@ class AuthenticationController extends Controller
     }
 
     /**
+     * Show the login form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function registrationForm()
+    {
+        return view('auth.login');
+    }
+
+    /**
      * Handle a login request to the application.
      *
      * @param LoginRequest  $request
