@@ -17,7 +17,6 @@ class CheckPermissions
      */
     public function handle(Request $request, Closure $next, $permission)
     {
-        info(auth()->user()->hasPermission($permission) . "---");
         if (!auth()->user()->hasPermission($permission)) {
             abort(403);
         }

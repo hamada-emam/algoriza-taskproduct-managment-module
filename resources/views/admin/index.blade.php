@@ -5,19 +5,21 @@
         <!-- Sidebar for filters -->
 
         <!-- Main Content -->
-        <div class="col-md-20">
-            <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="row mb-4 mt-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <h2 class="text-dark-blue">Products</h2>
-                    <div>
-                        <button class="btn btn-primary mr-2" onclick="exportProducts()">Export</button>
-                        <button class="btn btn-success" onclick="window.location='{{ route('products.create') }}'">Add
-                            New</button>
-                    </div>
+                    @if (Auth::user()->hasPermission('create-products'))
+                        <div>
+                            <button class="btn btn-primary mr-2" onclick="exportProducts()">Export</button>
+                            <button class="btn btn-success" onclick="window.location='{{ route('products.create') }}'">Add
+                                New</button>
+                        </div>
+                    @endif
                 </div>
             </div>
-            <!-- Search Bar -->
 
+            <!-- Search Bar -->
             {{-- @include('partials.search_bare', ['products' => $products]) --}}
 
             <!-- Search form -->

@@ -55,7 +55,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col-md-20">
+        <div class="col-md-9">
             <!-- Search Bar -->
             @include('partials.search_bare', ['products' => $products])
 

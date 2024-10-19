@@ -43,7 +43,12 @@ Follow these steps to set up the project:
     php artisan serve --host 0.0.0.0
     ```
 
-7. Open the application in your browser:
+6. Link storage to be public accessible:
+    ```bash
+    php artisan storage:link
+    ```
+
+8. Open the application in your browser:
     - `http://localhost:8000`
     - OR, if using a different local IP: `http://your-local-ip:8000`
 

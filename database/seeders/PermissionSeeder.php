@@ -20,6 +20,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'update categories', 'slug' => 'update-categories'],
             ['name' => 'delete categories', 'slug' => 'delete-categories'],
 
+            ['name' => 'View products', 'slug' => 'view-products'],
             ['name' => 'create products', 'slug' => 'create-products'],
             ['name' => 'update products', 'slug' => 'update-products'],
             ['name' => 'delete products', 'slug' => 'delete-products'],

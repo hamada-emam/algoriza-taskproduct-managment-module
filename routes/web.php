@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'web'])->prefix('dashboard')->group(function () {
 
     Route::get('/', [ProductController::class, 'list'])
-        // ->middleware('check-permissions:list-products')
+        ->middleware('check-permissions:view-products')
         ->name('products.list');
 
     Route::controller(ProductController::class)->group(function () {
@@ -19,7 +19,7 @@ Route::middleware(['auth', 'web'])->prefix('dashboard')->group(function () {
         Route::post('/products/store', 'store')
             ->name('products.store');
         Route::get('/products/{id}/edit', 'edit')
-            ->middleware('check-permissions:edit-products')
+            ->middleware('check-permissions:update-products')
             ->name('products.edit');
         Route::put('/products/{id}/update', 'update')
             ->name('products.update');

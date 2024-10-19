@@ -80,7 +80,6 @@ class User extends Authenticatable
 
     public function scopeHasAnyPermission($query, string|array $permission)
     {
-info($this->role->permissions);
         $query->whereHas('role.permissions', function ($query) use ($permission) {
             $query->where(function ($query) use ($permission) {
                 collect($permission)->each(function ($permission) use ($query) {

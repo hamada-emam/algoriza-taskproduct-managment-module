@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="">
         <div class="row">
             <!-- Top Navbar -->
             @include('partials.dashboard_nav', [])
@@ -24,7 +24,7 @@
 
             <!-- Main content -->
             <main role="main" class="main-content">
-                <div class="container-fluid mt-16"> <!-- Change to container-fluid -->
+                <div class="container-fluid"> 
                     @yield('content')
                 </div>
             </main>

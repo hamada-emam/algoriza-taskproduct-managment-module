@@ -27,7 +27,7 @@ class Active implements ValidationRule
      */
     public function passes($attribute, $value)
     {
-        return !$value || $this->class::where($this->keyColumn, $value)->whereBool($this->activeColumn, true)->exists();
+        return !$value || $this->class::where($this->keyColumn, $value)->where($this->activeColumn, true)->exists();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductCreateRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -70,7 +71,6 @@ class ProductController extends Controller
             ->when($request->input('description'), function ($query, $description) {
                 return $query->where('description', 'like', '%' . $description . '%');
             })
-            // Filter by tags
             ->when($request->input('tags'), function ($query, $tags) {
                 return $query->where('tags', 'like', '%' . $tags . '%');
             })
@@ -80,7 +80,7 @@ class ProductController extends Controller
             ->when($request->input('active') !== null, function ($query) use ($request) {
                 return $query->where('active', $request->input('active'));
             })
-            ->paginate(9);
+            ->paginate(20);
 
         sleep(2);
 
@@ -101,7 +101,7 @@ class ProductController extends Controller
     public function store(ProductCreateRequest $request)
     {
         $product = new Product();
-        dd($request->validated());
+
         $product->forceFill($request->validated());
 
         if ($request->hasFile('image')) {
@@ -121,26 +121,18 @@ class ProductController extends Controller
         return view('products.edit', compact('product', 'categories', 'mode'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(ProductUpdateRequest $request, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable',
-            'image' => 'nullable|image'
-        ]);
-
-        $product->forceFill($request->all());
+        $product = Product::findOrFail($id);
+        $product->forceFill($request->validated());
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('product-images', 'public');
-            $product->image = $path;
+            $product->image = upload_file($request->file('image'));
         }
 
         $product->save();
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('products.list')->with('success', 'Product updated successfully.');
     }
 
     public function delete($id)

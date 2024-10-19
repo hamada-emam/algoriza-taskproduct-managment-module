@@ -16,7 +16,7 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
+        <div class="container-lg">
             <a class="navbar-brand" href="{{ route('guest.products') }}">Product Store</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,17 +46,16 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <div class="container-lg mt-4">
         @yield('content')
+        @include('partials.loading_spinner')
     </div>
 
-    @include('partials.loading_spinner')
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         $(document).ready(function() {
-            // Handle category filter
             $('.category-filter').on('click', function(e) {
                 e.preventDefault();
                 const categoryId = $(this).data('id');
@@ -84,23 +83,20 @@
                 });
             });
 
-            // Handle the toggle icon for collapsible categories
             $('.toggle-icon').on('click', function() {
                 const targetId = $(this).data('target');
-                $(targetId).collapse('toggle'); // Toggle the collapse state
+                $(targetId).collapse('toggle');
 
-                // Change the icon direction based on collapse state
                 const $icon = $(this).find('i');
                 $icon.toggleClass('fa-chevron-down fa-chevron-up');
             });
 
-            // Handle search filter
             $('#search-form').on('submit', function(e) {
-                e.preventDefault(); // Prevent default form submission
+                e.preventDefault();
 
                 const search = $('input[name="search"]').val();
                 const categoryId = $('.category-filter.active').data(
-                    'id'); // Ensure you manage active state
+                    'id');
 
                 $.ajax({
                     url: '{{ route('guest.products') }}',
@@ -110,7 +106,7 @@
                         categoryId: categoryId
                     },
                     beforeSend: function() {
-                        $('#loading-spinner').show(); // Show the loading spinner
+                        $('#loading-spinner').show();
                     },
                     success: function(data) {
                         $('#products-container').html(data); // Load the filtered products

@@ -17,6 +17,7 @@
                         @csrf
                         @if ($mode === 'update')
                             @method('PUT')
+                            <input type="hidden" name="id" value="{{ $product->id }}">
                         @endif
 
                         <div class="form-group">
@@ -59,7 +60,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tags">Tags (comma separated)</label>
+                            <label for="tags">Tags (Space separated)</label>
                             <input type="text" name="tags" id="tags"
                                 value="{{ old('tags', $product->tags ?? '') }}"
                                 class="form-control @error('tags') is-invalid @enderror">
@@ -97,19 +98,37 @@
                                 @endif
                             </div>
                         </div>
-                        {{-- TODO: add validation for active --}}
+                        <!-- Category Dropdown -->
+                        <div class="form-group">
+                            <label for="category_id">Category</label>
+                            <select name="category_id" id="category_id"
+                                class="form-control @error('category_id') is-invalid @enderror">
+                                <option value="">-- Select a category (optional) --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id', $product->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="row align-items-center mb-3">
                             <div class="col-md-2">
                                 <div class="mt-2">
                                     <span class="text-muted">Active</span>
                                     <label class="switch">
+                                        <input type="hidden" name="active" value="0">
                                         <input type="checkbox" name="active" value="1"
-                                            {{ old('active', $product->active ?? 0) == '1' ? 'checked' : '' }}
-                                            onchange="this.value = this.checked ? '1' : '0';">
+                                            {{ old('active', $product->active ?? 0) == '1' ? 'checked' : '' }}>
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
                             </div>
+
                             <div class="col-md-10 text-right">
                                 <button type="submit"
                                     class="btn btn-primary">{{ $mode === 'create' ? 'Create Product' : 'Update Product' }}</button>

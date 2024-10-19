@@ -17,7 +17,7 @@
             <tbody>
                 @php
                     $page = request()->get('page');
-                    $index = $page ? ($page - 1) * 9 : 0;
+                    $index = $page ? ($page - 1) * 20 : 0;
                 @endphp
                 @foreach ($products as $product)
                     <tr onclick="handleRowClick('{{ route('products.edit', $product->id) }}')" style="cursor: pointer;">
@@ -28,7 +28,8 @@
                             $index++;
                         @endphp
                         <td>
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}" class="img-fluid" style="width: 40px; height: auto;">
+                            <img src="{{ $product->image }}" alt="{{ $product->name }}" class="img-fluid"
+                                style="width: 40px; height: auto;">
                         </td>
                         <td class="align-middle">
                             <span class="text-dark-blue font-weight-500">{{ $product->code }}</span>
