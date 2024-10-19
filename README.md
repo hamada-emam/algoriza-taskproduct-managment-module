@@ -18,9 +18,10 @@ Follow these steps to set up the project:
     git clone https://github.com/hamada-emam/algoriza-taskproduct-managment-module.git
     ```
 
-2. Navigate into the project directory:
+2. Navigate into the project directory, add your config in .env file and copy .env.example to .env:
     ```bash
     cd algoriza-taskproduct-managment-module
+    cp .env.example .env
     ```
 
 3. Install project dependencies and autoload classes:
